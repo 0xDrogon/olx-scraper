@@ -2,6 +2,7 @@ import requests
 import time
 import os
 import json
+from datetime import datetime
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 from twilio.rest import Client
@@ -9,7 +10,7 @@ from twilio.rest import Client
 
 def send_sms(msg):
     CLIENT.messages.create(body=msg, from_=SRC_NUMBER, to=DST_NUMBER)
-    print(f"Message sent to {DST_NUMBER}")
+    print(f'[{datetime.now().strftime("%d/%m %H:%M")}] Message sent to {DST_NUMBER}')
 
 
 def filter(ads, filtering):
@@ -64,24 +65,24 @@ def scraper():
         removed_entries = [entry for entry in prev_entries if entry not in entries]
         
         if len(new_entries) > 0:
-            print(f"There are {len(new_entries)} new entries")
+            print(f'[{datetime.now().strftime("%d/%m %H:%M")}] There are {len(new_entries)} new entries')
             with open('./output/output.json', 'a') as f:
                 for entry in new_entries:
                     f.write(json.dumps(entry) + '\n')
                     send_sms(f"New ticket sale!\n\n{entry['name']}\n{entry['url']}")
         else:
-            print("There are no new entries")
+            print(f'[{datetime.now().strftime("%d/%m %H:%M")}] There are no new entries')
 
         if len(removed_entries) > 0:
-            print(f"There are {len(removed_entries)} removed entries")
+            print(f'[{datetime.now().strftime("%d/%m %H:%M")}] There are {len(removed_entries)} removed entries')
             with open('./output/output.json', 'w') as f:
                 for entry in entries:
                     f.write(json.dumps(entry) + '\n')
         else:
-            print("There are no removed entries")
+            print(f'[{datetime.now().strftime("%d/%m %H:%M")}] There are no removed entries')
 
         prev_entries = entries
-        time.sleep(5*60)  # sleeps for 5 minutes
+        time.sleep(3*60)  # sleeps for 5 minutes
 
 
 if __name__ == '__main__':
