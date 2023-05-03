@@ -12,8 +12,8 @@ def send_sms(msg):
     print(f"Message sent to {DST_NUMBER}")
 
 
-def filter(ads):
-    filtered = [ad for ad in ads if "6" in ad['description']]
+def filter(ads, filtering):
+    filtered = [ad for ad in ads if filtering in ad['description']]
     return filtered
 
 
@@ -44,10 +44,11 @@ def request(session):
         a_resp = session.get(ad['url'])
         description = ad_parser(a_resp)
         ad['description'] = description
-    """filtered_ads = filter(ads)
+    """filtered_ads = filter(ads, "6")
     for f_ad in filtered_ads:
         print(f"{f_ad['name']}, {f_ad['url']}\n{f_ad['description']}")
-        print("---------------------\n")"""
+        print("---------------------\n")
+    return filtered_ads"""
     return ads
 
 
@@ -67,7 +68,7 @@ def scraper():
             with open('./output/output.json', 'a') as f:
                 for entry in new_entries:
                     f.write(json.dumps(entry) + '\n')
-                    #send_sms(f"New ticket sale!\n\n{entry['name']}\n{entry['url']}")
+                    send_sms(f"New ticket sale!\n\n{entry['name']}\n{entry['url']}")
         else:
             print("There are no new entries")
 
