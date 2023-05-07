@@ -35,6 +35,8 @@ def search_parser(response):
 def ad_parser(response):
     soup = BeautifulSoup(response.content, 'html.parser')
     description = soup.find('div', {'class': 'css-bgzo2k er34gjf0'})
+    if description is None:
+        return ''
     return description.text.strip()
 
 
@@ -45,11 +47,6 @@ def request(session):
         a_resp = session.get(ad['url'])
         description = ad_parser(a_resp)
         ad['description'] = description
-    """filtered_ads = filter(ads, "6")
-    for f_ad in filtered_ads:
-        print(f"{f_ad['name']}, {f_ad['url']}\n{f_ad['description']}")
-        print("---------------------\n")
-    return filtered_ads"""
     return ads
 
 
